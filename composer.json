@@ -2,9 +2,6 @@
     "name": "matsevh/jeugdwerk-news",
     "description": "A packages for Jeugdwerk used to merge multiple news sources of an organization into one json",
     "type": "library",
-    "require": {
-        "erusev/parsedown": "^1.7"
-    },
     "autoload": {
         "psr-4": {
             "Matsevh\\JeugdwerkNews\\": "src/"
