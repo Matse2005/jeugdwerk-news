@@ -48,18 +48,6 @@ class NewsController extends Controller
         return (object) $items;
     }
 
-    public function store()
-    {
-    }
-
-    public function update()
-    {
-    }
-
-    public function destroy()
-    {
-    }
-
     // Combining function
     function LoadRssItems($feed)
     {
