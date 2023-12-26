@@ -211,7 +211,8 @@ class NewsController extends Controller
 
     function item($item)
     {
-        return $this->stripMarkdown(trim(str_replace("\n", ' ', $item)));
+        $tidy = new \Tidy;
+        return $this->stripMarkdown(str_replace('’', '\'', (trim(str_replace("\n", ' ', $item)))));
     }
 
     function compareByPublishedDate($a, $b)
