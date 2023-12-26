@@ -67,7 +67,7 @@ class NewsController extends Controller
                 'published' => $pubDate
             ];
 
-            $items[] = $arr;
+            $items[] = (object) $arr;
         }
 
         return $items;
@@ -108,7 +108,7 @@ class NewsController extends Controller
                 'published' => $published
             ];
 
-            $items[] = $arr;
+            $items[] = (object) $arr;
         }
 
         return $items;
@@ -176,7 +176,7 @@ class NewsController extends Controller
                         'published' => $this->convertToISO8601($this->item($post[$fields->published]))
                     ];
 
-                    $items[] = $arr;
+                    $items[] = (object) $arr;
                 }
             } else {
                 echo 'Error decoding JSON data.';
