@@ -45,7 +45,7 @@ class NewsController extends Controller
             return strtotime($b['published']) - strtotime($a['published']);
         });
 
-        return (object) $items;
+        return $items;
     }
 
     // Combining function
@@ -67,7 +67,7 @@ class NewsController extends Controller
                 'published' => $pubDate
             ];
 
-            $items[] = (object) $arr;
+            $items[] = $arr;
         }
 
         return $items;
@@ -108,7 +108,7 @@ class NewsController extends Controller
                 'published' => $published
             ];
 
-            $items[] = (object) $arr;
+            $items[] = $arr;
         }
 
         return $items;
@@ -176,7 +176,7 @@ class NewsController extends Controller
                         'published' => $this->convertToISO8601($this->item($post[$fields->published]))
                     ];
 
-                    $items[] = (object) $arr;
+                    $items[] = $arr;
                 }
             } else {
                 echo 'Error decoding JSON data.';
