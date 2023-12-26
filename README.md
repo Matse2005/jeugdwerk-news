@@ -19,7 +19,23 @@ First, install Jeugdwerk News via the [Composer](https://getcomposer.org/) packa
 composer require matsevh/jeugdwerk-news
 ```
 
-First you need to migrate the news provider table
+Start by adding the Jeugdwerk News Service provider into you `config/app.php`
+
+```php
+'providers' => ServiceProvider::defaultProviders()->merge([
+    /*
+      * Package Service Providers...
+      */
+    \Matsevh\JeugdwerkNews\NewsServiceProvider::class,
+
+    /*
+      * Application Service Providers...
+      */
+    ...
+])->toArray(),
+```
+
+After that you can migrate the news provider table
 
 ```bash
 php artisan migrate
