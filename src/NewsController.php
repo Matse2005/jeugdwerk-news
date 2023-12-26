@@ -15,7 +15,7 @@ class NewsController extends Controller
         if (!Cache::store('file')->has($key)) {
             Cache::store('file')->put($key, $this->collect($link_to), 3600000);
         }
-        return Cache::store('file')->get($key);
+        return (object) Cache::store('file')->get($key);
     }
 
     public function collect(int $link_to = null)
