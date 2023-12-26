@@ -23,5 +23,9 @@ class NewsServiceProvider extends ServiceProvider
         include __DIR__ . '/routes/web.php';
         // $this->loadRoutesFrom(__DIR__ . '/routes');
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
+
+        $this->publishes([
+            __DIR__ . '/migrations/' => database_path('migrations')
+        ], 'migrations');
     }
 }
