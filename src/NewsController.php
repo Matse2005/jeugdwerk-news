@@ -211,7 +211,6 @@ class NewsController extends Controller
 
     function item($item)
     {
-        $tidy = new \Tidy;
         return $this->stripMarkdown(str_replace('’', '\'', (trim(str_replace("\n", ' ', $item)))));
     }
 
