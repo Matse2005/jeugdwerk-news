@@ -63,7 +63,7 @@ class NewsController extends Controller
             $arr = [
                 'title' => $title,
                 'link' => $link,
-                'summery ' => $description,
+                'summery' => $description,
                 'published' => $pubDate
             ];
 
@@ -89,11 +89,11 @@ class NewsController extends Controller
                 }
             }
 
-            $summery  = '';
+            $summery = '';
             if (isset($entry->summery)) {
-                $summery  = $this->item($entry->summery);
+                $summery = $this->item($entry->summery);
             } elseif (isset($entry->content)) {
-                $summery  = $this->item($entry->content);
+                $summery = $this->item($entry->content);
             }
 
             $published = isset($entry->published) ? $entry->published : '';
@@ -104,7 +104,7 @@ class NewsController extends Controller
             $arr = [
                 'title' => $title,
                 'link' => $link,
-                'summery ' => $summery,
+                'summery' => $summery,
                 'published' => $published
             ];
 
@@ -172,7 +172,7 @@ class NewsController extends Controller
                     $arr = [
                         'title' => $this->item($post[$fields->title]),
                         'link' => $this->item($post[$fields->link]),
-                        'summery ' => $this->truncate($this->item($post[$fields->summery])),
+                        'summery' => $this->truncate($this->item($post[$fields->summery])),
                         'published' => $this->convertToISO8601($this->item($post[$fields->published]))
                     ];
 
