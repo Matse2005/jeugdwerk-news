@@ -103,7 +103,7 @@ class NewsController extends Controller
 
             $arr = [
                 'title' => $title,
-                'link' => $link,
+                'link' => $this->item($link),
                 'summery' => $summery,
                 'published' => $published
             ];
@@ -211,7 +211,7 @@ class NewsController extends Controller
 
     function item($item)
     {
-        return $this->stripMarkdown(str_replace('’', '\'', (trim(str_replace("\n", ' ', $item)))));
+        return $this->stripMarkdown(trim(str_replace("\n", ' ', addslashes($item))));
     }
 
     function compareByPublishedDate($a, $b)
