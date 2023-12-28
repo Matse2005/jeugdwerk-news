@@ -6,6 +6,22 @@ use Matsevh\JeugdwerkNews\NewsProviderController;
 
 Route::prefix('api/jeugdwerk-news')->group(function () {
   Route::prefix('providers')->group(function () {
+    Route::get('checkkeys', function () {
+      $providerController = new NewsProviderController();
+      return response()->json($providerController->checkKeys(
+        "https://cropp.blog/feed.json",
+        json_encode([
+          'items'
+        ]),
+        json_encode([
+          'title' => 'title',
+          'link' => 'url',
+          'summery' => 'content_html',
+          'published' => 'date_published',
+        ])
+      ));
+    });
+
     Route::get('create', function () {
       $providerController = new NewsProviderController();
       return response()->json($providerController->create(
@@ -19,7 +35,7 @@ Route::prefix('api/jeugdwerk-news')->group(function () {
     Route::get('update', function () {
       $providerController = new NewsProviderController();
       return response()->json($providerController->update(
-        4,
+        3,
         truncate: true
       ));
     });
@@ -27,7 +43,7 @@ Route::prefix('api/jeugdwerk-news')->group(function () {
     Route::get('delete', function () {
       $providerController = new NewsProviderController();
       return response()->json($providerController->delete(
-        4
+        6
       ));
     });
 
