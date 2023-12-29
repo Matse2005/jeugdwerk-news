@@ -90,12 +90,12 @@ class NewsController extends Controller
     /*
         DATA
     */
-    function createItem($title, $link, $summery, $published): array
+    function createItem($title, $link, $summary, $published): array
     {
         return [
             'title' => $this->formatItem($title),
             'link' => $this->formatItem($link),
-            'summery' => $this->truncateItem($this->formatItem($summery)),
+            'summary' => $this->truncateItem($this->formatItem($summary)),
             'published' => $this->convertToISO8601($published)
         ];
     }
@@ -118,6 +118,12 @@ class NewsController extends Controller
     {
         $parsedown = new ParsedownController();
         return $parsedown->text($markdownText);
+    }
+
+    function convertToISO8601($inputDate)
+    {
+        $date = new \DateTime($inputDate);
+        return $date->format('Y-m-d\TH:i:s.v\Z');
     }
 
     function formatItem($item): string|int|float
@@ -158,16 +164,16 @@ class NewsController extends Controller
                 }
             }
 
-            $summery = null;
-            if (isset($entry->summery))
-                $summery = $entry->summery;
+            $summary = null;
+            if (isset($entry->summary))
+                $summary = $entry->summary;
             elseif (isset($entry->content))
-                $summery = $entry->content;
+                $summary = $entry->content;
 
             $published = isset($entry->published) ? $entry->published : '';
             $published = is_object($published) ? $published->__toString() : $published;
 
-            $items[] = $this->createItem($entry->title, $link, $summery, $published);
+            $items[] = $this->createItem($entry->title, $link, $summary, $published);
         }
 
         return $items;
@@ -204,7 +210,7 @@ class NewsController extends Controller
 
         $fields = json_decode($provider['fields']);
         foreach ($data as $post) {
-            $items[] = $this->createItem($post[$fields->title], $post[$fields->link], $post[$fields->summery], $post[$fields->published]);
+            $items[] = $this->createItem($post[$fields->title], $post[$fields->link], $post[$fields->summary], $post[$fields->published]);
         }
 
         $this->closeCurlSession($ch);
