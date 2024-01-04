@@ -26,7 +26,7 @@ class NewsController extends Controller
     {
         $key = $this->makeKey($link_to);
         if (!$this->existInCache($key)) {
-            $this->storeInCache($key, $this->data());
+            $this->storeInCache($key, $this->data($link_to));
         }
 
         return $this->getFromCache($key);
