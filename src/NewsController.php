@@ -181,7 +181,7 @@ class NewsController extends Controller
 
             // Convert to UTF-8 if the encoding is detected
             if ($detected_encoding !== false) {
-                $title = mb_convert_encoding($title, 'UTF-8', $detected_encoding) . " " . $detected_encoding;
+                $title = mb_convert_encoding($title, 'UTF-8', $detected_encoding);
             } else {
                 $title = "Unable to detect the encoding.";
             }
