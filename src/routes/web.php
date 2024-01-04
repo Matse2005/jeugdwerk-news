@@ -66,6 +66,7 @@ Route::prefix('api/jeugdwerk-news')->group(function () {
   Route::prefix('news')->group(function () {
     Route::get('{link_to}', function ($link_to) {
       $newsController = new NewsController();
+      // dd($newsController->get($link_to));
       return response()->json($newsController->get($link_to));
     });
 

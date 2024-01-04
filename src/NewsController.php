@@ -132,10 +132,21 @@ class NewsController extends Controller
         $item = trim($item);
 
         // Remove \n
-        $item = str_replace("\n", ' ', $item);
+        $item = str_replace("\n", " ", $item);
+
+        // if (\str_contains($item, 'Ã©'))
+        //     dd(mb_detect_encoding($item, mb_detect_order(), true));
+
+        $item = htmlentities($item);
+
+        // Encode
+        $item = mb_convert_encoding($item, 'UTF-8');
 
         // Remove markdown
         $item = $this->removeMarkdown($item);
+
+        // Decode 
+        $item = html_entity_decode($item);
 
         // Remove html
         $item = strip_tags($item);
@@ -164,6 +175,16 @@ class NewsController extends Controller
                 }
             }
 
+            $title = $entry->title;
+            // Detect the encoding
+            $detected_encoding = mb_detect_encoding($title, mb_detect_order(), true);
+
+            // Convert to UTF-8 if the encoding is detected
+            if ($detected_encoding !== false) {
+                $title = mb_convert_encoding($title, 'UTF-8', $detected_encoding) . " " . $detected_encoding;
+            } else {
+                $title = "Unable to detect the encoding.";
+            }
             $summary = null;
             if (isset($entry->summary))
                 $summary = $entry->summary;
@@ -173,7 +194,7 @@ class NewsController extends Controller
             $published = isset($entry->published) ? $entry->published : '';
             $published = is_object($published) ? $published->__toString() : $published;
 
-            $items[] = $this->createItem($entry->title, $link, $summary, $published);
+            $items[] = $this->createItem($title, $link, $summary, $published);
         }
 
         return $items;
@@ -297,7 +318,8 @@ class NewsController extends Controller
 
     function isLocalhost()
     {
-        return strtolower(substr($_SERVER['HTTP_HOST'], 0, 9)) === 'localhost';
+        // dd($_SERVER);
+        return $_SERVER['SERVER_NAME'] == '127.0.0.1';
     }
 
     function disableSslVerification($ch)
