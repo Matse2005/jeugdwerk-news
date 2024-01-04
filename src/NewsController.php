@@ -177,14 +177,14 @@ class NewsController extends Controller
 
             $title = $entry->title;
             // Detect the encoding
-            $detected_encoding = mb_detect_encoding($title, mb_detect_order(), true);
+            // $detected_encoding = mb_detect_encoding($title, mb_detect_order(), true);
 
-            // Convert to UTF-8 if the encoding is detected
-            if ($detected_encoding !== false) {
-                $title = mb_convert_encoding($title, 'UTF-8', $detected_encoding);
-            } else {
-                $title = "Unable to detect the encoding.";
-            }
+            // // Convert to UTF-8 if the encoding is detected
+            // if ($detected_encoding !== false) {
+            //     $title = mb_convert_encoding($title, 'UTF-8', $detected_encoding);
+            // } else {
+            //     $title = "Unable to detect the encoding.";
+            // }
             $summary = null;
             if (isset($entry->summary))
                 $summary = $entry->summary;
