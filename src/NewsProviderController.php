@@ -105,13 +105,68 @@ class NewsProviderController extends Controller
     /*
         VERIFY
     */
+    function verify_rss(array $provider)
+    {
+        if (!$this->verify_hostname($provider['link'])) {
+            return [
+                'link' => 'The given link doesn\'t exist'
+            ];
+        }
+
+        if (!$this->verify_url($provider['link'])) {
+            return [
+                'link' => 'The given link doesn\'t exist'
+            ];
+        }
+
+        $feed = simplexml_load_file($provider['link']);
+
+        if ($feed === false) {
+            return [
+                'link' => 'The given link is inaccessible.'
+            ];
+        }
+
+        $feed = $this->verify_link_rss($feed);
+
+        if (!$feed['ok'])
+            return $feed;
+
+        return ['ok' => true];
+    }
+
+    function verify_link_rss($feed)
+    {
+        if (!isset($feed->channel->item) and !isset($feed->entry))
+            return [
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link doesn\'t return a rss or atom feed.'
+                ]
+            ];
+
+        return ['ok' => true];
+    }
+
     function verify_json(array $provider)
     {
+        if (!$this->verify_hostname($provider['link'])) {
+            return [
+                'link' => 'The given link doesn\'t exist'
+            ];
+        }
+
+        if (!$this->verify_url($provider['link'])) {
+            return [
+                'link' => 'The given link doesn\'t exist'
+            ];
+        }
+
         $jsonData = file_get_contents($provider['link']);
 
         if ($jsonData === false) {
             return [
-                'link' => 'The given link doesn\'t exist or is inaccessible.'
+                'link' => 'The given link isn\'t inaccessible.'
             ];
         }
 
@@ -181,6 +236,26 @@ class NewsProviderController extends Controller
         }
 
         return count($response['errors']) <= 0 ? ['ok' => true, 'data' => $data] : $response;
+    }
+
+    function verify_hostname($url)
+    {
+        $ipAddress = gethostbyname(parse_url($url, PHP_URL_HOST));
+
+        if ($ipAddress == parse_url($url, PHP_URL_HOST))
+            return false;
+
+        return true;
+    }
+
+    function verify_url($url)
+    {
+        try {
+            $response = file_get_contents($url);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /*
