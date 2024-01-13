@@ -23,98 +23,6 @@ enum TypeAllowed: string
 
 class NewsProviderController extends Controller
 {
-    // public function create(
-    //     int $link_to,
-    //     string $name,
-    //     string $type,
-    //     string $link,
-    //     ?array $sub = null,
-    //     ?bool $truncate = false,
-    //     ?array $authentication = null,
-    //     ?array $fields = null
-    // ): ?object {
-    //     if (!TypeAllowed::containsValue($type)) {
-    //         return null;
-    //     }
-
-    //     $providerData = [
-    //         'link_to' => $link_to,
-    //         'name' => $name,
-    //         'type' => $type,
-    //         'link' => $link,
-    //         'sub' => $sub !== null ? json_encode($sub) : null,
-    //         'truncate' => $truncate,
-    //         'authentication' => $authentication !== null ? json_encode($authentication) : null,
-    //         'fields' => $fields !== null ? json_encode($fields) : null
-    //     ];
-
-    //     $provider = NewsProvider::create($providerData);
-
-    //     return $provider;
-    // }
-
-    // public function all($link_to = null): object
-    // {
-    //     if ($link_to !== null) {
-    //         $providers = NewsProvider::where('link_to', $link_to)->get();
-    //     } else {
-    //         $providers = NewsProvider::all();
-    //     }
-
-    //     return $providers;
-    // }
-
-    // public function read(int $providerId): ?object
-    // {
-    //     $provider = NewsProvider::where('id', $providerId)->first();
-
-    //     return $provider ?: null;
-    // }
-
-    // public function update(
-    //     int $providerId,
-    //     ?int $link_to = null,
-    //     ?string $name = null,
-    //     ?string $type = null,
-    //     ?string $link = null,
-    //     ?array $sub = null,
-    //     ?bool $truncate = null,
-    //     ?array $authentication = null,
-    //     ?array $fields = null
-    // ): ?object {
-    //     if ($type !== null && !TypeAllowed::containsValue($type)) {
-    //         return null;
-    //     }
-
-    //     $provider = NewsProvider::where('id', $providerId)->first();
-
-    //     if ($provider !== null) {
-    //         $provider->update([
-    //             'link_to' => $link_to ?? $provider->link_to,
-    //             'name' => $name ?? $provider->name,
-    //             'type' => $type ?? $provider->type,
-    //             'link' => $link ?? $provider->link,
-    //             'sub' => $sub ?? $provider->sub,
-    //             'truncate' => $truncate ?? $provider->truncate,
-    //             'authentication' => $authentication ?? $provider->authentication,
-    //             'fields' => $fields ?? $provider->fields
-    //         ]);
-    //     }
-
-    //     return $provider;
-    // }
-
-    // public function delete(int $providerId): bool
-    // {
-    //     $provider = NewsProvider::where('id', $providerId)->first();
-
-    //     if ($provider !== null) {
-    //         return $provider->delete();
-    //     }
-
-    //     return false;
-    // }
-
     public function create(
         int $link_to,
         string $name,
@@ -197,7 +105,88 @@ class NewsProviderController extends Controller
     /*
         VERIFY
     */
-    function checkKeys($url, $sub, $fields, $authentication = null)
+    function verify_json(array $provider)
+    {
+        $jsonData = file_get_contents($provider['link']);
+
+        if ($jsonData === false) {
+            return [
+                'link' => 'The given link doesn\'t exist or is inaccessible.'
+            ];
+        }
+
+        $data = (array) json_decode($jsonData);
+
+        $data = $this->verify_link_json($data);
+
+        if (!$data['ok'])
+            return $data;
+
+        $data = $this->verify_sub_json($data['data'], $provider['sub']);
+
+        if (!$data['ok'])
+            return $data;
+
+        $data = $this->verify_fields_json($data['data'], $provider['fields']);
+
+        if (!$data['ok'])
+            return $data;
+
+        return ['ok' => true];
+    }
+
+    function verify_link_json($data)
+    {
+        if ($data == null) {
+            return [
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link doesn\'t return JSON.'
+                ]
+            ];
+        }
+
+        return ['ok' => true, 'data' => $data];
+    }
+
+    function verify_sub_json($data, $subs)
+    {
+        foreach (json_decode($subs) as $sub) {
+            if (isset($data[$sub]))
+                $data = $data[$sub];
+            else
+                return [
+                    'ok' => false,
+                    'errors' => [
+                        'sub' => 'The given sublevel(s) doesn\'t exist'
+                    ]
+                ];
+        }
+
+        return ['ok' => true, 'data' => $data];
+    }
+
+    function verify_fields_json($data, $fields)
+    {
+        $response = [
+            'ok' => false,
+            'errors' => []
+        ];
+
+        // dd($data);
+        $first = (array) $data[0];
+        foreach (json_decode($fields) as $key => $field) {
+            if (!isset($first[$field]))
+                $response['errors'][$key] = 'The field ' . $field . ' doesn\'t exist.';
+        }
+
+        return count($response['errors']) <= 0 ? ['ok' => true, 'data' => $data] : $response;
+    }
+
+    /*
+        VERIFY WITH CURL (Not in use at the moment)
+    */
+    function checkKeys_curl($url, $sub, $fields, $authentication = null)
     {
         $provider = [
             'link' => $url,
@@ -241,7 +230,7 @@ class NewsProviderController extends Controller
         return $this->checkKeysMatchFields($provider);
     }
 
-    function checkKeysMatchFields($provider)
+    function checkKeysMatchFields_curl($provider)
     {
         $ch = $this->initCurlSession($provider['link'], $provider['authentication']);
         $response = $this->executeCurlRequest($ch);

@@ -212,6 +212,26 @@ class NewsController extends Controller
 
     function json($provider)
     {
+        $items = [];
+
+        $json = file_get_contents($provider['link']);
+        $data = json_decode($json);
+
+        foreach (json_decode($provider['sub']) as $sub) {
+            if (isset($data->{$sub}))
+                $data = $data->{$sub};
+        }
+
+        $fields = json_decode($provider['fields']);
+        foreach ($data as $post) {
+            $items[] = $this->createItem($post->{$fields->title}, $post->{$fields->link}, $post->{$fields->summary}, $post->{$fields->published});
+        }
+
+        return $items;
+    }
+
+    function json_curl($provider)
+    {
         $ch = $this->initCurlSession($provider['link'], $provider['authentication']);
         $response = $this->executeCurlRequest($ch);
 

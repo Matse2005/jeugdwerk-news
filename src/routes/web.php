@@ -8,18 +8,18 @@ Route::prefix('api/jeugdwerk-news')->group(function () {
   Route::prefix('providers')->group(function () {
     Route::get('checkkeys', function () {
       $providerController = new NewsProviderController();
-      return response()->json($providerController->checkKeys(
-        "https://cropp.blog/feed.json",
-        json_encode([
+      return response()->json($providerController->verify_json([
+        'link' => "https://cropp.blog/feed.json",
+        'sub' => json_encode([
           'items'
         ]),
-        json_encode([
+        'fields' => json_encode([
           'title' => 'title',
           'link' => 'url',
           'summery' => 'content_html',
           'published' => 'date_published',
         ])
-      ));
+      ]));
     });
 
     Route::get('create', function () {
