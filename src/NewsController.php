@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DateTime;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Matsevh\JeugdwerkNews\ParsedownController;
 use PhpOption\None;
 
@@ -39,13 +40,49 @@ class NewsController extends Controller
         $items = [];
 
         foreach ($providers as $provider) {
+            $provider = [
+                'id' => $provider['id'],
+                'link_to' => $provider['link_to'],
+                'name' => $provider['name'],
+                'link' => $provider['link'],
+                'type' => $provider['type'],
+                'sub' => $provider['sub'],
+                'truncate' => $provider['truncate'],
+                'authentication' => $provider['authentication'],
+                'fields' => $provider['fields']
+            ];
             switch ($provider['type']) {
                 case "rss":
-                    $feed = simplexml_load_file($provider['link']);
-                    $items = array_merge($items, $this->rssOrAtom($feed));
+                    $errors = $providerController->verify_rss($provider);
+                    if ($errors['ok']) {
+                        $feed = simplexml_load_file($provider['link']);
+                        $items = array_merge($items, $this->rssOrAtom($feed));
+                    } else {
+                        foreach ($errors['errors'] as $key => $error) {
+                            $items[] = [
+                                'title' => $provider['name'] . " - " . $provider['link'],
+                                'summery' => $error,
+                                'link' => 'javascript:void(0)',
+                                'published' => date("Y-m-d\TH:i:sO")
+                            ];
+                        }
+                    }
                     break;
                 case 'json':
-                    $items = array_merge($items, $this->json($provider));
+                    $errors = $providerController->verify_json((array) $provider);
+                    // dd($errors);
+                    if ($errors['ok']) {
+                        $items = array_merge($items, $this->json($provider));
+                    } else {
+                        foreach ($errors['errors'] as $key => $error) {
+                            $items[] = [
+                                'title' => $provider['name'] . " - " . $provider['link'],
+                                'summery' => $error,
+                                'link' => 'javascript:void(0)',
+                                'published' => date("Y-m-d\TH:i:sO")
+                            ];
+                        }
+                    }
                     break;
             }
         }

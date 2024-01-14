@@ -109,13 +109,19 @@ class NewsProviderController extends Controller
     {
         if (!$this->verify_hostname($provider['link'])) {
             return [
-                'link' => 'The given link doesn\'t exist'
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link doesn\'t exist'
+                ]
             ];
         }
 
         if (!$this->verify_url($provider['link'])) {
             return [
-                'link' => 'The given link doesn\'t exist'
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link doesn\'t exist'
+                ]
             ];
         }
 
@@ -123,7 +129,10 @@ class NewsProviderController extends Controller
 
         if ($feed === false) {
             return [
-                'link' => 'The given link is inaccessible.'
+                'ok' => false,
+                'errors' => [
+                    'sub' => 'The given link is inaccessible.'
+                ]
             ];
         }
 
@@ -152,13 +161,19 @@ class NewsProviderController extends Controller
     {
         if (!$this->verify_hostname($provider['link'])) {
             return [
-                'link' => 'The given link doesn\'t exist'
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link doesn\'t exist'
+                ]
             ];
         }
 
         if (!$this->verify_url($provider['link'])) {
             return [
-                'link' => 'The given link doesn\'t exist'
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link doesn\'t exist'
+                ]
             ];
         }
 
@@ -166,7 +181,10 @@ class NewsProviderController extends Controller
 
         if ($jsonData === false) {
             return [
-                'link' => 'The given link isn\'t inaccessible.'
+                'ok' => false,
+                'errors' => [
+                    'link' => 'The given link isn\'t inaccessible.'
+                ]
             ];
         }
 
