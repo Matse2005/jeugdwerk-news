@@ -293,10 +293,10 @@ class NewsProviderController extends Controller
 
         // dd($data);
         $first = (array) $data[0];
-        foreach (json_decode($fields) as $key => $field) {
+        foreach (json_decode($fields) as $field) {
             if (!isset($first[$field]))
                 $response['errors'] =                         [
-                    'item' => 'sub',
+                    'item' => $field . '_field',
                     'error' => 'The field ' . $field . ' doesn\'t exist.',
                     'localization' => 'JeugdwerkNews::verify.field-exist',
                     'variables' => ['field' => $field]
