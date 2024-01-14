@@ -111,7 +111,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t exist'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link doesn\'t exist',
+                        'localization' => 'JeugdwerkNews::verify.link-exists',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -120,7 +125,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t exist'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link doesn\'t exist',
+                        'localization' => 'JeugdwerkNews::verify.link-exists',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -131,7 +141,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'sub' => 'The given link is inaccessible.'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link is inaccessible',
+                        'localization' => 'JeugdwerkNews::verify.link-inaccessible',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -150,7 +165,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t return a rss or atom feed.'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link doesn\'t return a rss or atom feed.',
+                        'localization' => 'JeugdwerkNews::verify.rss-feed',
+                        'variables' => []
+                    ]
                 ]
             ];
 
@@ -163,7 +183,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t exist'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link doesn\'t exist',
+                        'localization' => 'JeugdwerkNews::verify.link-exists',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -172,7 +197,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t exist'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link doesn\'t exist',
+                        'localization' => 'JeugdwerkNews::verify.link-exists',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -183,7 +213,12 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link is inaccessible.'
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link is inaccessible',
+                        'localization' => 'JeugdwerkNews::verify.link-inaccessible',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -214,7 +249,13 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t return JSON.'
+                    'link' => 'The given link doesn\'t return JSON.',
+                    [
+                        'item' => 'link',
+                        'error' => 'The given link doesn\'t exist',
+                        'localization' => 'JeugdwerkNews::verify.link-inaccessible',
+                        'variables' => []
+                    ]
                 ]
             ];
         }
@@ -231,7 +272,12 @@ class NewsProviderController extends Controller
                 return [
                     'ok' => false,
                     'errors' => [
-                        'sub' => 'The given sublevel(s) doesn\'t exist'
+                        [
+                            'item' => 'sub',
+                            'error' => 'The given sublevel(s) doesn\'t exist',
+                            'localization' => 'JeugdwerkNews::verify.sub-exist',
+                            'variables' => []
+                        ]
                     ]
                 ];
         }
@@ -251,6 +297,12 @@ class NewsProviderController extends Controller
         foreach (json_decode($fields) as $key => $field) {
             if (!isset($first[$field]))
                 $response['errors'][$key] = 'The field ' . $field . ' doesn\'t exist.';
+            $response['errors'] =                         [
+                'item' => 'sub',
+                'error' => 'The field ' . $field . ' doesn\'t exist.',
+                'localization' => 'JeugdwerkNews::verify.field-exist',
+                'variables' => ['field' => $field]
+            ];
         }
 
         return count($response['errors']) <= 0 ? ['ok' => true, 'data' => $data] : $response;
