@@ -249,11 +249,10 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link doesn\'t return JSON.',
                     [
                         'item' => 'link',
-                        'error' => 'The given link doesn\'t exist',
-                        'localization' => 'JeugdwerkNews::verify.link-inaccessible',
+                        'error' => 'The given link doesn\'t return JSON.',
+                        'localization' => 'JeugdwerkNews::verify.json-feed',
                         'variables' => []
                     ]
                 ]
@@ -296,13 +295,12 @@ class NewsProviderController extends Controller
         $first = (array) $data[0];
         foreach (json_decode($fields) as $key => $field) {
             if (!isset($first[$field]))
-                $response['errors'][$key] = 'The field ' . $field . ' doesn\'t exist.';
-            $response['errors'] =                         [
-                'item' => 'sub',
-                'error' => 'The field ' . $field . ' doesn\'t exist.',
-                'localization' => 'JeugdwerkNews::verify.field-exist',
-                'variables' => ['field' => $field]
-            ];
+                $response['errors'] =                         [
+                    'item' => 'sub',
+                    'error' => 'The field ' . $field . ' doesn\'t exist.',
+                    'localization' => 'JeugdwerkNews::verify.field-exist',
+                    'variables' => ['field' => $field]
+                ];
         }
 
         return count($response['errors']) <= 0 ? ['ok' => true, 'data' => $data] : $response;
