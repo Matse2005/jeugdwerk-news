@@ -183,7 +183,7 @@ class NewsProviderController extends Controller
             return [
                 'ok' => false,
                 'errors' => [
-                    'link' => 'The given link isn\'t inaccessible.'
+                    'link' => 'The given link is inaccessible.'
                 ]
             ];
         }
