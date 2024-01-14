@@ -8,22 +8,22 @@ Route::prefix('api/jeugdwerk-news')->group(function () {
   Route::prefix('providers')->group(function () {
     Route::get('checkkeys', function () {
       $providerController = new NewsProviderController();
-      // return response()->json($providerController->verify_json([
-      //   'link' => "https://cropp.blog/feed.json",
-      //   'sub' => json_encode([
-      //     'items'
-      //   ]),
-      //   'fields' => json_encode([
-      //     'title' => 'title',
-      //     'link' => 'url',
-      //     'summery' => 'content_html',
-      //     'published' => 'date_published',
-      //   ])
-      // ]));
-
-      return response()->json($providerController->verify_rss([
-        'link' => "https://www.nieuwsblad.be/rss/section/5517e67-15a8-4ddd-a3d8-bfe5708f8932",
+      return response()->json($providerController->verify_json([
+        'link' => "https://cropp.blog/feed.json",
+        'sub' => json_encode([
+          'items'
+        ]),
+        'fields' => json_encode([
+          'title' => 'title',
+          'link' => 'url',
+          'summery' => 'context_html',
+          'published' => 'date_published',
+        ])
       ]));
+
+      // return response()->json($providerController->verify_rss([
+      //   'link' => "https://www.nieuwsblad.be/rss/section/5517e67-15a8-4ddd-a3d8-bfe5708f8932",
+      // ]));
     });
 
     Route::get('create', function () {
